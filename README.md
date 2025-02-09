@@ -43,10 +43,9 @@ Within the project there is a file `/data/dbus-evcc/config.ini` - just change th
    (Count up `dbus-evcc-1` for each loadpoint)
 2. Update the `dbus-evcc-1/config.ini`:
    - The `deviceinstance` should be different for each loadpoint: Use `43` for the first. Use `44` for the second loadpoint...
-3. Update the `dbus-evcc.py`:
-   Search for `["loadpoints"][0]` and replace it with `["loadpoints"][1]`.
+   - The `loadpointInstance` should be different for each loadpoint: Use `0` for the first. Use `1` for the second loadpoint...
 
-If you have more than two loadpoints, the procedure is the same, but the index should be counted up.
+If you have more than two loadpoints, the procedure is the same, but the indexes should be counted up.
 
 ## Useful links
 Many thanks. @vikt0rm, @fabian-lauer, @trixing and @JuWorkshop project:
