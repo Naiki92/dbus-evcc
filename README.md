@@ -30,7 +30,7 @@ Within the project there is a file `/data/dbus-evcc/config.ini` - just change th
 | DEFAULT  | Deviceinstance | Unique ID identifying the charger in Venus OS |
 | ONPREMISE  | Host | IP or hostname of EVCC |
 
-## If you have two load points in EVCC
+## If you have two or more load points in EVCC
 1. Follow the installation instructions above, but change the commands as follows:
    ```
    wget https://github.com/SamuelBrucksch/dbus-evcc/archive/refs/heads/main.zip

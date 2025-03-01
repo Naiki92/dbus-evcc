@@ -24,6 +24,8 @@ class DbusEvccChargerService:
     def __init__(self, servicename, paths, productname='EVCC-Charger', connection='EVCC REST API'):
         config = self._getConfig()
         deviceinstance = int(config['DEFAULT']['Deviceinstance'])
+	lpInstance = int(config['DEFAULT']['LoadpointInstance'])
+	acPosition = int(config['DEFAULT']['AcPosition'])
 
         self._dbusservice = VeDbusService("{}.http_{:02d}".format(servicename, deviceinstance))
         self._paths = paths
@@ -37,6 +39,11 @@ class DbusEvccChargerService:
 
         # get data from go-eCharger
         data = self._getEvccChargerData()
+	result = data["result"]
+        loadpoint = result["loadpoints"][lpInstance]
+
+        # Set custom name from loadpoint title
+        customname = str(loadpoint['title'])
 
         # Create the management objects, as specified in the ccgx dbus-api document
         self._dbusservice.add_path('/Mgmt/ProcessName', __file__)
@@ -45,17 +52,17 @@ class DbusEvccChargerService:
         self._dbusservice.add_path('/Mgmt/Connection', connection)
 
         # Create the mandatory objects
-        self._dbusservice.add_path('/DeviceInstance', deviceinstance)
+        self._dbusservice.add_path('/', )
         self._dbusservice.add_path('/ProductId', 0xFFFF)  #
         self._dbusservice.add_path('/ProductName', productname)
-        self._dbusservice.add_path('/CustomName', productname)
+        self._dbusservice.add_path('/CustomName', customname)
         #self._dbusservice.add_path('/FirmwareVersion', int(data['divert_update']))
         self._dbusservice.add_path('/HardwareVersion', 2)
         #self._dbusservice.add_path('/Serial', data['comm_success'])
         self._dbusservice.add_path('/Connected', 1)
         self._dbusservice.add_path('/UpdateIndex', 0)
 
-        self._dbusservice.add_path('/Position', 1) # 0: ac out, 1: ac in
+        self._dbusservice.add_path('/Position', acPosition) # 0: ac out, 1: ac in
 
         # add paths without units
         for path in paths_wo_unit:
@@ -129,9 +136,11 @@ class DbusEvccChargerService:
     def _update(self):
         try:
             # get data from go-eCharger
+	    config = self._getConfig()
+            lpInstance = int(config['DEFAULT']['LoadpointInstance'])
             data = self._getEvccChargerData()
             result = data["result"]
-            loadpoint = result["loadpoints"][0]
+            loadpoint = result["loadpoints"][lpInstance]
 
             # send data to DBus
 
